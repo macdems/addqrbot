@@ -7,12 +7,16 @@ from telegram.ext.filters import TEXT
 
 from .qr import make_qrcode
 
-
 class TelegramBot:
 
     def __init__(self, token):
         self.token = token
-        self.application = Application.builder().token(token).updater(None).build()
+        self.application = Application.builder() \
+            .token(token) \
+            .connection_pool_size(1024) \
+            .pool_timeout(10) \
+            .concurrent_updates(True) \
+        .build()
 
         self.application.add_handler(CommandHandler("start", self.start))
         self.application.add_handler(MessageHandler(TEXT, self.process_message))
